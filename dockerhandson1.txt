@@ -1,0 +1,1351 @@
+docker installation on ubuntu
+
+Prerequisites
+
+os install Docker Engine - Community, you need the 64-bit version of one of these Ubuntu versions:
+
+    Disco 19.04
+    Cosmic 18.10
+    Bionic 18.04 (LTS)
+    Xenial 16.04 (LTS)
+
+Install using the repository
+
+Before you install Docker Engine - Community for the first time on a new host machine, you need to set up the Docker repository. Afterward, you can install and update Docker from the repository.
+Set up the repository
+
+    Update the apt package index:
+
+
+$ sudo apt-get update
+
+
+
+Install packages to allow apt to use a repository over HTTPS:
+
+$ sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+
+
+Add Docker’s official GPG key:
+
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+
+Verify that you now have the key with the fingerprint 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88, by searching for the last 8 characters of the fingerprint.
+
+$ sudo apt-key fingerprint 0EBFCD88
+
+
+Use the following command to set up the stable repository. To add the nightly or test repository, add the word nightly or test (or both) after the word stable
+
+
+$ sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
+
+install Docker Engine - Community
+
+    Update the apt package index.
+
+    $ sudo apt-get update
+
+
+Install the latest version of Docker Engine - Community and containerd, or go to the next step to install a specific version:
+
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+
+To install a specific version of Docker Engine - Community, list the available versions in the repo, then select and install:
+
+a. List the versions available in your repo:
+
+$ apt-cache madison docker-ce
+
+
+install docker using script
+
+$ curl -fsSL https://get.docker.com -o get-docker.sh
+$ sudo sh get-docker.sh
+
+
+
+b. Install a specific version using the version string from the second column, for example, 5:18.09.1~3-0~ubuntu-xenial.
+
+$ sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> containerd.io
+
+Verify that Docker Engine - Community is installed correctly by running the hello-world image.
+
+$ sudo docker run hello-world
+
+
+
+Uninstall the Docker Engine - Community package:
+
+$ sudo apt-get purge docker-ce
+
+
+
+Images, containers, volumes, or customized configuration files on your host are not automatically removed. To delete all images, containers, and volumes:
+
+$ sudo rm -rf /var/lib/docker
+
+docker configuration file
+
+/etc/docker/daemon.json
+
+
+systemd
+
+$ sudo systemctl enable docker
+
+$ sudo systemctl disable docker
+
+
+To view all available option in docker 
+
+$doker
+
+You can search for images available on Docker Hub by using the docker command with the search subcommand. For example, to search for the Ubuntu image, type:
+
+  $ sudo docker search ubuntu
+
+Execute the following command to download the official ubuntu image to your computer:
+
+ $docker pull ubuntu
+
+
+
+To see the images that have been downloaded to your computer, type:
+
+  $ sudo docker images
+
+docker hub acount
+
+https://hub.docker.com/
+
+create account and add repostory
+
+login docker
+
+# docker login
+
+username:chandransaiva	
+
+password:*******
+
+# docker ps -a
+
+# docker commit 1efd1bdc1637 chandransaiva/my-first-repo:2
+
+# docker push chandransaiva/my-first-repo:2
+
+# docker pull chandransaiva/my-first-repo:2
+
+
+list container
+
+# docker ps ---> show running container
+
+ps --> process status 
+
+
+
+#docker ps -a --> view all started and stopped conatiner
+
+
+List the most recently created images
+
+$ sudo docker images
+
+
+view images by name
+
+$ sudo docker images centos
+
+view image id
+
+$ sudo docker images -q
+
+view full length image id
+
+$ sudo docker images centos --no-trunc
+
+List image digests
+
+$ sudo docker images --digests
+
+
+A Docker image's ID is a digest, which contains an SHA256 hash of the image's JSON configuration object
+
+print repository name and id
+
+$ sudo docker images --format "{{.ID}}:{{.Repository}}"
+
+view image field wise
+
+
+$ sudo docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Size}}"
+
+
+
+start docker container
+
+$ sudo docker start containerid
+
+stop docker continer
+
+$ sudo docker stop containerid
+
+restart docker container
+
+$ sudo docker restart continerid
+
+
+run docker container using image id
+
+$ sudo docker run –it centos /bin/bash 
+
+working in docker container using container id
+
+$ sudo docker exec –it centos /bin/bash 
+
+
+
+view docker image history
+
+$ sudo docker history imageid
+
+to attache docker container
+
+Attach local standard input, output, and error streams to a running container
+
+$ sudo docker container attach  42fe1bad4e6c
+
+detatch docker continer
+
+docker run -d --name topdemo ubuntu /usr/bin/top -b
+
+remove docker continer
+
+$ sudo docker container rm -f containerid --->  Force the removal of a running container (uses SIGKILL)
+
+$ sudo docker container rm -l containerid ----> Remove the specified link
+
+sudo docker container rm -v containerid-----> Remove the volumes associated with the container
+
+view container log
+
+$  sudo docker container logs continerid
+
+rename docker container
+
+$ sudo docker container rename CONTAINER NEW_NAME
+
+
+Display detail information about conrainer
+
+$ sudo docker container inspect containerid
+
+
+list docker container 
+
+sudo docker container ls -l, -s -f, -n -q
+
+l---list
+
+s---size
+
+f--filter
+
+-n --- new
+
+-q ---id 
+
+kill container
+
+$ sudo docker container kill containerid 
+
+view cpu and memory usage in container id
+
+$ sudo docker container stats containerid
+
+pause all process running on container
+
+$ sudo docker container pause containerid
+
+$ sudo docker ps
+
+$ sudo docker container unpause containerid
+
+
+docker configuration to stop and service
+
+$ sudo systemctl start docker
+
+$ sudo systemctl stop docker
+
+$ sudo systemctl status docker
+
+$ sudo systemctl enable docker
+
+
+create docker file for build own image
+
+But Docker also gives you the capability to create your own Docker images, and it can be done with the help of Docker Files. A Docker File is a simple text file with instructions on how to build your images.
+
+$ sudo vim Dockerfile
+
+#This is sample image
+
+FROM ubuntu
+
+MAINTAINER chandransaiva@gmail.com
+
+RUN apt-get update -y
+RUN apt-get install -y nginx
+
+CMD ["echo","image created"]
+
+
+build own docker images
+
+sudo docker build -t myimage:sai directory
+
+
+run container from image
+
+$ sudo docker run -it imageid /bin/bash
+
+start continer
+
+$ sudo docker container start container id
+
+
+need to push local image to docker hub first stop docker container
+
+$ sudo docker container stop continer id
+
+
+change container to image
+
+$ sudo docker commit conatinerid dockerhubusername/reponame:tagname
+
+
+$ sudo docker images
+
+
+push docker images to hub
+
+$ sudo docker push chandransaiva/my-first-repo:3
+
+
+view docker cpu and memory utilation 
+
+$ sudo docker stats
+
+allocate cpu usage and ram in docker image
+
+sudo docker run -it --cpus=".5" --memory="100m" ubuntu /bin/bash
+
+
+--oom-kill-disable
+
+By default, if an out-of-memory (OOM) error occurs, the kernel kills processes in a container. To change this behavior, use the --oom-kill-disable option. Only disable the OOM killer on containers where you have also set the -m/--memory option. If the -m flag is not set, the host can run out of memory and the kernel may need to kill the host system’s processes to free memory.
+
+sudo docker run -it --oom-kill-disable --cpus=".5" --memory="50m" --memory-swap="100m" ubuntu /bin/bash
+
+
+create docker volume
+
+sudo docker volume --help
+
+
+sudo docker volume --help
+
+Usage:	docker volume COMMAND
+
+Manage volumes
+
+Commands:
+  create      Create a volume
+  inspect     Display detailed information on one or more volumes
+  ls          List volumes
+  prune       Remove all unused local volumes
+  rm          Remove one or more volumes
+
+
+
+create docker volume 
+
+$ sudo docker volume create my-vol
+
+list docker volume
+
+$ sudo docker volume ls
+
+DRIVER              VOLUME NAME
+local               my-vol
+
+
+view detial about docker volume
+
+sudo docker volume inspect my-vol
+[
+    {
+        "CreatedAt": "2019-12-30T06:10:59Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/my-vol/_data",
+        "Name": "my-vol",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+
+
+
+remove docker volume
+
+
+$ sudo docker volume rm my-vol
+
+create docker volume and mount to container
+
+sudo docker run --name myjenkins1 -v my-vol:/var/ubuntu_home -p 8080:8080 -p 50000:50000 jenkins
+
+
+view docker disk usage
+
+$ sudo docker system df -v
+
+
+create docker network
+
+
+$ sudo docker network --help
+
+
+find default bridge network container ip
+
+$ sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 536ce88c8493
+
+$ sudo docker network ls
+
+$ sudo docker network inspect networkid
+
+
+check two conatiner communicating each other
+
+
+$ sudo docker attach conatinername
+
+ping second container like---172.17.0.3
+
+
+create user define bridge network to check two conatiner communucation
+
+    $ sudo docker network create sainetwork
+    $ sudo docker run -itd --name=saiubuntu --network=sainetwork ubuntu 
+    $ sudo docker ps
+    $ sudo docker network inspect ae49feed8405
+    $ sudo docker run -itd --name=saiubuntu1 --network=sainetwork ubuntu 
+    $ sudo docker ps
+    $ sudo docker network inspect ae49feed8405
+    $ sudo docker attach saiubuntu1
+
+  # ping another container both ip and name
+
+connect and disconnect network to container
+
+ $ sudo docker network disconnect sainetwork a23503e77e41
+ $ sudo docker network connect sainetwork a23503e77e41
+
+
+default bridge network configuration for container without isolation
+
+$ sudo docker images
+
+ubuntu              latest              549b9b86cb8d        12 days ago         64.2MB
+
+$ sudo docker run -itd --name networktest ubuntu /bin/bash
+
+$ sudo docker run -itd --name networktest1 ubuntu /bin/bash
+
+$ sudo docker ps 
+
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+72cbf134a6d6        ubuntu              "/bin/bash"         8 minutes ago       Up 8 minutes                            networktest1
+519c169df5b1        ubuntu              "/bin/bash"         13 minutes ago      Up 13 minutes                           networktest
+
+
+$ sudo docker attach 519c169df5b1
+
+# ping 172.17.0.3
+
+PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
+64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.091 ms
+64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.117 ms
+64 bytes from 172.17.0.3: icmp_seq=3 ttl=64 time=0.112 ms
+
+
+view ip tables nat policy
+
+sudo iptables -L -n -t nat
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+MASQUERADE  all  --  172.19.0.0/16        0.0.0.0/0           
+MASQUERADE  all  --  172.18.0.0/16        0.0.0.0/0           
+MASQUERADE  all  --  172.17.0.0/16        0.0.0.0/0  
+
+
+default bridge network configuration for container with isolation
+
+sudo vim /etc/default/docker
+
+add last line
+
+DOCKER_OPTS="--iptables=true --icc=false"  ----> it will restrict default docker communication
+
+$ sudo systemctl restart docker
+
+$ allow outside conatiner to docker
+
+create docker file and create own image
+
+$ sudo docker build --tag saiimage:sai .
+
+$ sudo docker run -it --name ownconainer -p 8080:80 -p 23769:3306  imageid /bin/bash
+
+
+access same network in diffrenet machine
+
+https://192.168.5.21:8080
+
+
+install docker compose 
+
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+$ sudo chmod +x /usr/local/bin/docker-compose
+
+$ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+$     $ docker-compose --version
+    docker-compose version 1.25.0, build 1110ad01
+
+uninstall docker container
+
+$ sudo rm /usr/local/bin/docker-compose
+
+
+create docker compose file
+
+$ sudo mkdir DockerComposeFile
+
+$ cd DockerComposeFile
+
+$ sudo vim docker-compose.yml
+
+version: '3'
+
+services:
+
+  web:
+
+    image: nginx
+    ports:
+    - "9090:80"
+  database:
+
+     image: redis
+
+check the validity of yaml file
+
+$ sudo docker-compose config
+
+services:
+  database:
+    image: redis
+  web:
+    image: nginx
+    ports:
+    - 9090:80/tcp
+version: '3.0'
+
+run docker compose file with detach mode
+
+$ sudo docker-compose up -d 
+
+$ sudo docker ps
+
+$ sudo docker-compose down
+
+scale docker services number of conatiner
+
+$ sudo docker-compose up -d --scale database=3
+
+$ sudo docker ps
+
+$ sudo docker-compose down
+
+compose docker file with network and volume
+
+sudo vim docker-compose.yml
+
+version: '3'
+
+services:
+
+  web:
+
+    image: nginx
+    ports:
+    - "9092:80"
+  database:
+
+    image: mysql
+    ports: 
+    - "5555:3306"
+
+volumes:
+  - type: volume
+    source: mydata
+    target: /data
+    volume:
+    nocopy: true
+  - type: bind
+    source: ./static
+    target: /opt/app/static
+
+     
+networks:
+
+  chandran:
+
+volumes:
+
+  mydata:
+
+$ sudo docker-compose up -d
+
+$ sudo docker ps
+
+
+
+
+get logs from container
+
+$ sudo docker create busybox echo hello-world
+
+$ sudo docker start 94a8ce2e29154c337baf14a6c393e4699eece284cb0221b5d0eee95859eb9463 (conatinerid)
+
+$ sudo docker logs 94a8ce2e29154c337baf14a6c393e4699eece284cb0221b5d0eee95859eb9463 (containerid) 
+
+  hello-world
+
+run nodejs wepapp inside container
+
+step1
+
+create folder simpleweb
+
+$ mkdir simpleweb
+
+$ cd simpleweb
+
+create nodejs package file
+
+vim package.json
+
+{
+  "dependencies": {
+
+    "express": "*"
+  },
+
+  "scripts": {
+
+    "start": "node index.js"
+  } 
+}
+
+save and exit
+
+step 2
+
+create index.js file
+
+vim index.js
+
+const express = require('express');
+
+const app = express();
+
+app.get('/', (req, res) => {
+
+  res.send('Hi there');	
+
+});
+
+app.listen(8080, () => {
+
+  console.log('Listening on port 8080');
+
+});
+
+
+save and exit
+
+create Dockerfile c--D caps
+
+vim Dockerfile
+
+#specify base image
+FROM alpine 
+
+# install some dependencies
+COPY ./  ./
+
+RUN npm install
+
+# Default startup command
+
+CMD ["npm","start"]
+
+
+
+
+
+step3
+
+run build command            imageid
+                              |
+$ sudo docker run build -t somename/name
+
+we got npm not found error thata means npm package not found in alpine image
+
+edit Dockerfile
+
+#specify base image 
+FROM node:alpine  ------> add node
+
+# install some dependencies
+
+
+RUN npm install
+
+# Default startup command
+
+CMD ["npm","start"]
+
+
+save and exit and run
+
+we got package manager not found error
+
+copy package manager from host to conatiner
+
+
+edit docker file 
+
+
+#specify base image 
+FROM node:alpine 
+
+# install some dependencies
+COPY ./ ./ --------------------change like this
+
+RUN npm install
+
+# Default startup command
+
+CMD ["npm","start"]
+
+
+save and exit then run
+
+$ sudo docker build name_or_imageid/name
+
+
+run docker with port mapping
+
+$ sudo docker run -p 4545:8080 imagename
+
+check on browser
+
+
+http://192.168.6.1:4545
+
+
+specify the woring directory for container 
+
+#specify base image 
+FROM node:alpine 
+
+WORKDIR /usr/app  --------add dircetory
+
+# install some dependencies
+COPY ./ ./ --------------------change like this
+
+RUN npm install
+
+# Default startup command
+
+CMD ["npm","start"]
+
+build image with tag
+
+sudo docker build -t sai/am:2 .
+
+run conatiner with port publish
+
+sudo docker run -it -p 6565:8080 sh
+
+
+container directed to
+
+/usr/app
+--------------------------------------------------------------------------------------------------------------
+Docker container production work flow
+
+developement work flow
+
+devlopement-->testing-->deployment-->redevlopement
+
+
+flow specifics
+
+github--> centralised code distributer
+
+githubbranch--->1.masterbranch---2.feature branch
+
+project generation 
+
+install node js and version
+
+# node -v
+
+v12.14.1
+
+create react project
+
+# npm install -g create-react-app
+
+# create-react-app frontend
+
+necessary coomands to use
+
+npm run test
+
+npm run build
+
+npm run start ----> for developemnt server 
+
+in bowser
+
+http://ip:3000
+
+cd /fronend
+
+vim Dockerfile.dev 
+
+FROM node:alpine
+
+WORKDIR '/app'
+
+COPY package.json .
+
+RUN npm install
+
+
+COPY . .
+
+CMD ["npm","run","start"]
+
+esc
+:wq!
+
+
+build docker file with spcified file name
+
+$ sudo docker build -f Dockerfile.dev .
+
+remove local package folder for duplicate package
+
+rm -rf node_modules
+
+run docker conatiner
+
+docker run imageid
+
+in browser not open because we need expose port for this conatiner
+
+
+$ sudo docker run -p 3000:3000 imageid
+
+
+modify source code and save its not not reflecting in running container we need to rebuild image or need to find some solution
+
+
+Docker volumes
+
+sudo docker build -f Dockerfile.dev .
+
+map current folder to inside container folder
+
+$ sudo docker run -p 3000:3000 -v $(pwd):/app  imageid
+
+we got error react server not found beacuse we need to list /app/node_modeulses folder to container 
+
+
+$ sudo docker run -p 3000:3000 -v /app/node_modeules -v(pwd):/app imageid
+
+
+after starting the container if you change source code it will changed automatically beacuse volume listd inside container
+
+
+docker-compose purpose it's make docker run easier
+
+vim docker-compose.yml  
+
+version: '3'
+services:
+  web:    
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+
+      - .:/app   
+
+  tests:
+    build:       
+      context: .
+      dockerfile: Dockerfile.dev
+
+    volumes:
+      - /app/node_modules
+      - .:/app
+
+    command: ["npm", "run", "test"] 
+
+esc
+
+:wq!
+
+$ sudo docker compose up     
+
+
+run conatiner with interactive mode
+
+$ sudo docker run -it container id npm run test
+
+
+cd /src
+
+
+
+cat App.test.js 
+import React from 'react';
+import { render } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  const { getByText } = render(<App />);
+  const linkElement = getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+
+
+test('renders learn react link', () => {
+  const { getByText } = render(<App />);
+  const linkElement = getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+
+
+$ sudo docker run -it imageid npm run test --> it pass the single test not pass the second test
+
+
+solution for this
+
+run use exsiting run container and run npm tests it pass the test what we made change in source code
+
+$ sudo docker-compose up 
+$ sudo docker ps 
+
+$ sudo docker exec -it conatinerid npm run test
+
+another way to test app add service in yaml file and test
+
+tests:
+    build:       
+      context: .
+      dockerfile: Dockerfile.dev
+
+    volumes:
+      - /app/node_modules
+      - .:/app
+
+    command: ["npm", "run", "test"] 
+
+
+$ sudo docker-compose up --build
+
+
+change source code and check it will reflect the test
+
+run new command to inside the container
+
+$ sudo docker exec -it conatinerid  npm run start
+
+
+continus integration with travis client
+
+
+
+Git setup
+
+
+create git repo --->create local repo--->connect local git to remote git---> push code to remote repo
+
+
+login gihub account
+
+https://github.com
+
+create repo docker-react
+
+click public
+
+click craete repository
+
+
+
+create local repository
+
+
+cd frondend
+
+sudo git init ---> initialize git
+
+
+sudo git add .
+
+sudo git commit -m "inital commit"
+
+sudo git remote add origin https://github.com/saivachandran/docker-react.git
+
+sudo git push origin master
+
+
+travis ci setup
+
+
+pc-->push--->github-->travisci--->travis does work
+
+use https://travis-ci.org
+
+authorize travic-ci
+
+after login in repository enable docker-react
+
+what travis ci do exactly
+
+detect code change automatically and test code then deploy code in aws
+
+we can define what travis ci what need to do
+
+
+create .travis.yml inside project directory
+
+
+vim .travis.yml
+
+sudo: required   ##superuser permission
+
+services:
+        
+  - docker       ## travis cli need docker cli pre installed
+    
+    
+before_install:  ## series commands executed before test run
+
+
+  - docker build -t saivachandran/docker-react -f Dockerfile.dev .
+
+
+script:  ## script section need to runn difrent commnad in test 
+
+  - docker run saivachandran/docker-react npm run test -- --coverage
+
+
+
+test in terminal
+
+run build containerwith detailed inforamation 
+
+
+$ sudo docker run imageid npm run test -- --coverage
+
+
+
+automatic build in github using travis-ci
+
+
+commit the change locally and push to github travis detect change automatically
+
+cd /fronend
+
+sudo git add .
+
+sudo commit -m "Added travis file"
+
+sudo git push origin master
+
+
+aws elastic beanstalk
+
+login aws
+
+elastic beanstalk
+
+create new application set name docker-react
+
+
+create enviroment
+
+
+base configuration select docker
+
+then sample configuration 
+
+create enviroment
+
+after successfully cfreated elastic beanstalk
+
+you url in dashboard and click and check you will got welcome page
+
+
+
+travis configuration for deployment
+
+edit .travis.yml add below lines
+
+sudo vim .travis.yml
+
+deploy:
+        
+  provider: elasticbeanstalk
+  region: "ap-south-1"
+  app: "docker"
+  env: "Docker-env"
+  bucket_name: "elasticbeanstalk-ap-south-1-907225840730"
+  bucket_path: "docker"
+  
+  on:
+    branch: master
+
+
+access aws server over travis using api key 
+
+select iam service
+
+click user 
+
+add user
+
+
+give username docker-react-travis-ci
+
+Access type programatic access
+
+select aws mamangenet access
+
+next permissions
+
+give permision to newly created user
+
+select beanstalk full programatic access
+
+give tag name
+
+and create user 
+
+
+it shows access key and secret access key
+
+
+go backto travis dashboard
+
+more options select settings
+
+under enviroment variable
+
+give name and access key
+
+add secret key
+
+go backto .travis.yml add below
+
+access_key_id: $AWS_ACCESS_KEY
+  
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
+
+After changes 
+
+sudo git add .
+
+sudo git commit -m "added travis config deploy"
+
+sudo git push origin master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+install nginx on ubuntu conatiner
+
+# apt-get update -y
+
+# apt-get install nginx -y
+
+# service nginx reload
+
+# service nginx restart
+
+# apt-get install curl
+
+# curl localhost:80
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
