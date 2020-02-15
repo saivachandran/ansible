@@ -1,0 +1,318 @@
+ansible installation linux ubuntu machine
+
+# apt -y update
+
+# apt -y  install ansible
+
+view ansible stored system location
+
+# which ansible
+
+/usr/bin/ansible
+
+view ansible versions
+
+ansible --version
+ansible 2.9.4
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = [u'/home/radd/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python2.7/dist-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 2.7.17 (default, Nov  7 2019, 10:07:09) [GCC 7.4.0]
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+create virtual enviroment for ansible and install pip 
+
+update the machine
+
+$ sudo apt update -y
+
+$ sudo apt install python-minimal virtualenv  python-dev build-essential
+
+$ mkdir ansible
+ 
+$ cd ansible
+
+$ virtualenv venv27
+
+activate virtual env
+
+$ source venv27/bin/activate
+
+$ which ansible
+
+/home/radd/ansible/venv27/bin/ansible
+
+$ which python
+
+/home/radd/ansible/venv27/bin/python
+
+$ pip install ansible
+
+$ which ansible
+/home/radd/ansible/venv27/bin/ansible
+
+
+$ ansible --version
+ansible 2.9.4
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = [u'/home/radd/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/radd/ansible/venv27/local/lib/python2.7/site-packages/ansible
+  executable location = /home/radd/ansible/venv27/bin/ansible
+  python version = 2.7.17 (default, Nov  7 2019, 10:07:09) [GCC 7.4.0]
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ansible using module communicate with nodes
+
+
+1.edit /etc/ansible/hosts using vim and add below lines
+
+##[Vm machines]
+192.168.5.20
+192.168.5.21
+
+esc
+:wq!
+
+2.edit /etc/ansible/ansible.cfg in [defaults] section add below lines
+
+inventory = hosts
+host_key_checking = False
+
+esc
+:wq!
+
+3.check  ansible ping module working or not using below command
+
+# ansible all -m ping
+
+we got below error
+
+192.168.5.21 | UNREACHABLE! => {
+    "changed": false, 
+    "msg": "Failed to connect to the host via ssh: root@192.168.5.21: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).", 
+    "unreachable": true
+}
+
+to overcome above issue generate ssh key using ssh-keygen command
+
+# ssh-keygen
+
+copy ssh key to remote node using below command
+
+# cat ~/.ssh/id_rsa.pub | ssh root@192.168.5.20 'cat >> .ssh/authorized_keys'
+
+# cat ~/.ssh/id_rsa.pub | ssh root@192.168.5.21 'cat >> .ssh/authorized_keys'
+
+# ansible all -m ping 
+
+192.168.5.20 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    }, 
+    "changed": false, 
+    "ping": "pong"
+}
+192.168.5.21 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    }, 
+    "changed": false, 
+    "ping": "pong"
+}
+
+
+mention inventory file and check ping module
+
+# ansible all -i  node2.sai.com, -m ping
+
+node2.sai.com | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    }, 
+    "changed": false, 
+    "ping": "pong"
+}
+
+
+
+Ansible debug mode its print hello world message
+
+ansible all -m debug
+192.168.5.20 | SUCCESS => {
+    "msg": "Hello world!"
+}
+192.168.5.21 | SUCCESS => {
+    "msg": "Hello world!"
+}
+
+
+# ansible-doc debug
+
+# ansible all -m debug --args='msg="ansible connected to remote host"'
+
+192.168.5.20 | SUCCESS => {
+    "msg": "ansible connected to remote host"
+}
+192.168.5.21 | SUCCESS => {
+    "msg": "ansible connected to remote host"
+}
+
+
+# ansible all -vv -m debug --args='msg="ansible connected to remote host" verbosity=2'
+
+ansible 2.9.4
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = [u'/root/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python2.7/dist-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 2.7.17 (default, Nov  7 2019, 10:07:09) [GCC 7.4.0]
+Using /etc/ansible/ansible.cfg as config file
+META: ran handlers
+192.168.5.20 | SUCCESS => {
+    "msg": "ansible connected to remote host"
+}
+192.168.5.21 | SUCCESS => {
+    "msg": "ansible connected to remote host"
+}
+META: ran handlers
+META: ran handlers
+
+
+print output in one line
+
+ansible all -m ping -o
+
+
+list ansible hosts
+
+# ansible all --list-hosts
+
+# Nansible ~.* --list-hosts
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ansible inventory
+
+collection of hosts it's called ansible default location  /etc/ansible/hosts
+
+vim /etc/ansible/hosts
+
+[centos] ---> group name inside squre bracket
+
+node1.sai.com
+node2.sai.com
+
+# ansibel all -m ping
+
+# ansible centos -m ping
+
+# ansible centos1 -m ping
+
+using shell module we can check uptime lats login firewall status 
+
+# ansible all -m shell -a "uptime"
+
+# ansible all -m shell -a "last"
+
+# ansible centos -m shell -a "systemctl status firewalld"
+
+# ansible cento1 -m shell -a "ip a"
+
+
+ansible inventry at diffrent location 
+
+
+rename default ansible inventry like below
+
+mv /etc/ansible/hosts /etc/ansible/hosts.orig
+
+create new custom invetntry file
+
+vim /root/hosts
+
+[centos]
+
+node1.sai.com
+
+check custom inventry file
+
+# ansible -i /root/hosts all -m shell -a "uptime"
+
+# ansible -i /root/hosts centos -m shell -a "last"
+
+
+
+multiple host and groups
+
+# ansible -i /root/hosts node1.sai.com:node2.sai.com -m shell -a "uptime"
+
+# ansible -i /root/hosts centos:centos1 -m shell -a "uptime"
+
+
+ad-hoc commands
+
+# ansible -i /root/hosts centos -m shell -a 'echo $TERM'
+
+
+copy file in ad-hoc command
+
+$ ansible -i /root/hosts centos -m copy -a "src=/etc/ansible/ansible.cfg dest=/tmp/hosts"
+
+change file permission to particular file
+
+# ansible -i /root/hosts -m file -a "dest=/root/1.txt mode=700"
+
+# ansible -i /root/hosts centos -m file -a "dest=/root/1.txt mode=655 owner=sai group=sai"
+
+create directory
+
+# ansible -i /root/hosts centos -m file -a "dest=/root/saiva mode=400 owner=root group=root state=directory"
+
+Delete folder using ansible
+
+# ansible -i /root/hosts centos -m file -a "dest=/root/saiva state=absent"
+
+install package using yum modeules
+
+# ansible -i /root/hosts centos -m yum -a "name=httpd state=latest"
+
+start the service using service module
+
+# ansible -i /root/hosts centos -m service -a "name=httpd state=started"
+
+
+ansible gatering facts
+
+# ansible -i /root/hosts -m setup
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
