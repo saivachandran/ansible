@@ -1,0 +1,541 @@
+## ansible inventry
+
+#cd /etc/ansible/
+
+# ls
+
+ansible.cfg  hosts  roles
+
+# vim ansible.cfg
+
+uncomment inventry = /etc/ansible/host
+
+esc
+:wq!
+------------------------------------------------------------------
+
+vim hosts
+
+add remote servers
+
+[webserver1] -- group name
+
+172.17.0.2   host ip
+
+[webserver2] -- group name
+
+172.17.0.3  host ip
+
+[webserver3] -- group name
+
+172.17.0.4   host ip
+
+esc
+:wq!
+
+---------------------------------------------------------------
+using ping module ping with all remote server its shows error
+
+create ssh key share with remote hosts
+
+# ssh-keygen -t rsa
+
+hit enter
+
+keys saved /root/.ssh/id_rsa_pub
+
+
+ssh-copy-id ~/.ssh/id_rsa root@172.17.0.2
+
+enter password: 
+
+----------------------------------------------------------------
+
+list ansible host
+
+ansible --list-host all
+
+hosts (3):
+    172.17.0.3
+    172.17.0.2
+    172.17.0.4
+--------------------------------------------------------------
+
+# ansible -m ping all
+
+172.17.0.2 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    }, 
+    "changed": false, 
+    "ping": "pong"
+}
+172.17.0.3 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    }, 
+    "changed": false, 
+    "ping": "pong"
+}
+
+now connected successfully
+-------------------------------------------------------------------- 
+display output in single line
+
+ansible -m ping all -o
+
+172.17.0.2 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"}, "changed": false, "ping": "pong"}
+172.17.0.3 | SUCCESS => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"}, "changed": false, "ping": "pong"}
+
+# ansible -m shell -a "uptime"
+
+172.17.0.2 | CHANGED | rc=0 >>
+ 08:49:46 up 5 min,  1 user,  load average: 0.09, 0.05, 0.01
+172.17.0.4 | CHANGED | rc=0 >>
+ 08:49:46 up 5 min,  1 user,  load average: 0.09, 0.05, 0.01
+----------------------------------------------------------------------------
+custom inventry file
+
+vim /root/hostfile
+
+[webserver1]
+172.17.0.2
+
+ansible -i /root/hostfile webserver1 -m ping
+
+172.17.0.2 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    }, 
+    "changed": false, 
+    "ping": "pong"
+}
+
+
+make custom path to default path
+
+vim ansible.cfg
+
+inventory = /root/hostfile
+
+ansible all -m ping 
+
+172.17.0.2 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    }, 
+    "changed": false, 
+    "ping": "pong"
+}
+
+------------------------------------------------------------------------------------------------
+ansible playbook
+
+**handson1**
+
+install apache webserver on ubuntu remote machine
+
+# mkdir ansiblepay
+
+# cd ansibleplay
+
+# vim install.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: install apache webserver in ubuntu machine
+    apt: name=apache2 state=latest
+  - name: start apache service
+    service: name=apache2 state=restarted
+
+...   
+
+esc
+:wq!
+----------------------------------------------------------------------
+
+check ansible syntax error
+
+# ansible-play install.yml --syntax-check 
+
+playbook: install.yml
+
+it's not display any error we can run playbook
+
+if it's shows error we check playbook
+----------------------------------------------------------------
+
+if we have error playbook it show like below
+
+# ansible-play install.yml --syntax-check 
+
+ERROR! Syntax Error while loading YAML.
+  did not find expected key
+
+The error appears to be in '/root/ansibleplay/install.yml': line 5, column 4, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+  - name: install apache webserver in ubuntu machine
+   apt: name=apache2 state=latest
+   ^ here
+-----------------------------------------------------------------------------
+
+check which remote host ansible playbook run
+
+# ansible-playbook install.yml --list-host
+
+playbook: install.yml
+
+  play #1 (webserver1): webserver1	TAGS: []
+    pattern: [u'webserver1']
+    hosts (1):
+      172.17.0.2
+---------------------------------------------------------------------------------------------------------------------------
+
+run ansible playbook
+
+ansible-playbook install.yml 
+
+PLAY [all] *************************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [172.17.0.3]
+ok: [172.17.0.2]
+ok: [172.17.0.4]
+
+TASK [install apache webserver in ubuntu machine] **********************************************************************************************
+ok: [172.17.0.2]
+[WARNING]: Updating cache and auto-installing missing dependency: python3-apt
+changed: [172.17.0.4]
+changed: [172.17.0.3]
+
+TASK [start apache service] ********************************************************************************************************************
+changed: [172.17.0.3]
+changed: [172.17.0.4]
+changed: [172.17.0.2]
+
+PLAY RECAP *************************************************************************************************************************************
+172.17.0.2                 : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.17.0.3                 : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.17.0.4                 : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+--------------------------------------------------------------------------------------------------------------------------------
+uninstall apache webserver using ansible playbook
+
+vim unintsall.yml
+
+---
+- hosts: all
+  tasks:
+  - name: uninstall apache web server on remote hosts
+    apt: name=apache2 state=absent
+...    
+
+------------------------------------------------------------
+
+# ansible-playbook uninstall.yml --syntax-check 
+
+# ansible-playbook uninstall.yml
+
+ansible-playbook unintsall.yml 
+
+PLAY [all] *************************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [172.17.0.3]
+ok: [172.17.0.2]
+ok: [172.17.0.4]
+
+TASK [uninstall apache web server on remote hosts] *********************************************************************************************
+ok: [172.17.0.2]
+ok: [172.17.0.3]
+ok: [172.17.0.4]
+
+PLAY RECAP *************************************************************************************************************************************
+172.17.0.2                 : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.17.0.3                 : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.17.0.4                 : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+copy file from control node to remote node in ansible
+
+
+vim copy.yml
+---
+- hosts: all
+  tasks:
+  - name: copy file from host to running container
+    copy: src=/root/ansibleplay/install.yml  dest=/root/ owner=root group=root mode=600
+...
+
+esc
+:wq!
+
+# ansible-playbook copy.yml --syntax-check
+
+playbook: copy.yml
+
+# ansible-playbook copy.yml
+
+PLAY [all] *************************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [172.17.0.3]
+ok: [172.17.0.4]
+ok: [172.17.0.2]
+
+TASK [copy file from host to running container] ************************************************************************************************
+changed: [172.17.0.4]
+changed: [172.17.0.2]
+changed: [172.17.0.3]
+
+PLAY RECAP *************************************************************************************************************************************
+172.17.0.2                 : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.17.0.3                 : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.17.0.4                 : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+change file file permission in remote node using ansible
+
+vim file.yml
+
+---
+- hosts: all
+  tasks:
+  - name: change remote machine file permission
+    file: dest=/root/install.yml owner=sai group=sai mode=644
+
+...    
+
+esc
+:wq!
+
+
+
+# ansible-playbook file.yml --syntax-check
+
+playbook: file.yml
+
+
+# ansible-playbook file.yml 
+
+PLAY [all] *************************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [172.17.0.2]
+ok: [172.17.0.4]
+ok: [172.17.0.3]
+
+TASK [change remote machine file permission] ***************************************************************************************************
+changed: [172.17.0.2]
+changed: [172.17.0.3]
+changed: [172.17.0.4]
+
+PLAY RECAP *************************************************************************************************************************************
+172.17.0.2                 : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.17.0.3                 : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+172.17.0.4                 : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+---------------------------------------------------------------------------------------------------------------------------------
+
+copy file from remote machine to host machine 
+
+vim fetch.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: copy file from remotemachine to host machine
+    fetch:
+      src: /root/sai2.txt
+      dest: /root/ansibleplay/sai/
+...      
+
+esc
+:wq!
+
+# ansible-playbook fetch.yml --syntax-check
+
+# ansible-playbook fetch.yml --list-host
+
+# ansible-playbook fetch.yml
+
+---------------------------------------------------------------------------------------------------------------------
+delete file from remote server
+
+vim delete.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name:  delete file from remote server
+    file:
+      path: /root/user.txt
+      state: absent
+...      
+esc
+:wq!
+
+# ansible-playbook delete.yml --syntax-check
+
+# ansible-playbook delete.yml --list-host
+
+# ansible-playbook delete.yml
+
+check file deleted or not in the remote server
+
+----------------------------------------------------------------------------------------------------------------------
+
+create file in remote server 
+
+vim touch.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: creat file in remote server
+    file:
+      path: /root/kk.txt
+      state: touch
+      owner: sai
+      group: sai
+      mode: '755'
+...      
+
+esc
+:wq!
+
+# ansible-playbook touch.yml --syntax-check 
+
+# ansible-playbook touh.yml --list-host
+
+# ansible-playbook touch.yml
+----------------------------------------------------------------------------------------------------------------------
+
+multifile file creation
+
+vim multitouch.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: 
+    file:
+      path: "{{ item }}"
+      state: touch 
+      owner: sai
+      group: sai
+      mode: '644'
+    with_items:
+    - devops1.txt
+    - devops2.txt
+    - devops3.txt
+...
+
+esc
+:wq!
+
+# ansible-playbook multitouch.yml --syntax-check
+
+# ansible-playbook multitouch --list-host
+
+# ansible-playbook multitouch.yml
+
+-----------------------------------------------------------------------------------------------------------------------
+delete multiple file in remote server
+
+vim deletemul.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: 
+    file:
+      path: "{{ item }}"
+      state: absent 
+      owner: sai
+      group: sai
+      mode: '644'
+    with_items:
+    - devops1.txt
+    - devops2.txt
+    - devops3.txt
+...
+
+esc
+:wq!
+
+# ansible-playbook deletemul.yml --syntax-check
+
+# ansible-playbook deletemul.yml --list-host
+
+# ansible-playbook deletemul.yml
+
+
+--------------------------------------------------------------------------------------------------------------
+
+create directory in remote server
+
+vim directory.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: create directory in remote server
+    file:
+      path: /root/sachin
+      state: directory
+      owner: sai
+      group: sai
+      mode: '755'
+...      
+esc
+:wq!
+
+# ansible-playbook directory.yml --syntax-check
+
+# ansible-playbook directory.yml --list-host
+
+# ansible-playbook directory.yml
+
+
+-----------------------------------------------------------------------------------------
+ 
+create directory in remote server
+
+vim muldir.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: create directory in remote server
+    file:
+      path: "{{ items }}"
+      state: directory
+      owner: sai
+      group: sai
+      mode: '755'
+    with_items:
+    - sachin
+    - rohit
+    - gilly 
+...      
+esc
+:wq!
+
+# ansible-playbook muldir.yml --syntax-check
+
+# ansible-playbook muldir.yml --list-host
+
+# ansible-playbook muldir.yml
+
+-------------------------------------------------------------------------------------------
+
+
+
+
+
+

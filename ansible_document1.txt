@@ -1,0 +1,61 @@
+what is ansible 
+
+Ansible is an open-source software provisioning, configuration management, and application-deployment tool. It runs on many linux Unix-like systems, and can configure both Unix-like systems as well as Microsoft Windows. It includes its own declarative language to describe system configuration. Wikipedia
+License: Proprietary / GNU General Public License
+Stable release: 2.9.6 / March 5, 2020; 20 days ago
+Original author(s): Michael DeHaan
+Developer(s): Ansible Community / Ansible Inc. / Red Hat Inc.
+Operating system: Linux, Unix-like, MacOS, Windows
+Written in: Python, PowerShell, Ruby
+
+-----------------------------------------------------------------------------------------------------------
+
+how ansible works
+
+Ansible works by connecting to your nodes and pushing out small programs, called "Ansible modules" to them. ... Ansible then executes these modules (over SSH by default), and removes them when finished. Your library of modules can reside on any machine, and there are no servers, daemons, or databases required.
+-----------------------------------------------------------------------------------------------------------
+why we use ansible
+
+Ansible automates and simplifies repetitive, complex, and tedious operations. Everybody likes it because it brings huge time savings when we install packages or configure large numbers of servers. Its architecture is simple and effective. It works by connecting to your nodes and pushing small programs to them
+
+-----------------------------------------------------------------------------------------------------------
+Advantages of Ansible
+
+Very simple to set up and use: No special coding skills are necessary to use Ansible's playbooks (more on playbooks later). Powerful: Ansible lets you model even highly complex IT workflows. Flexible: You can orchestrate the entire application environment no matter where it's deployed
+
+-------------------------------------------------------------------------------------------------------------
+
+disadvantages of Ansible
+
+is the lack of any notion of state. Ansible does not have any notion of state like other automation tools such as Puppet. Ansible does not track dependencies and simply executes sequential tasks and stops when tasks finish, fail, or any error comes
+-----------------------------------------------------------------------------------------------------------
+
+what is ansibe inventry
+
+Ansible works against multiple systems in your infrastructure at the same time. It does this by selecting portions of systems listed in Ansible’s inventory file, which defaults to being saved in the location /etc/ansible/hosts. You can specify a different inventory file using the -i <path> option on the command line.
+--------------------------------------------------------------------------------------------------------------
+Ansible yaml
+YAML (a recursive acronym for "YAML Ain't Markup Language") is a human-readable data-serialization language. It is commonly used for configuration files and in applications where data is being stored or transmitted.
+-------------------------------------------------------------------------------------------
+
+For Ansible, nearly every YAML file starts with a list. Each item in the list is a list of key/value pairs, commonly called a “hash” or a “dictionary”. So, we need to know how to write lists and dictionaries in YAML.
+
+There’s another small quirk to YAML. All YAML files (regardless of their association with Ansible or not) can optionally begin with --- and end with .... This is part of the YAML format and indicates the start and end of a document.
+
+All members of a list are lines beginning at the same indentation level starting with a "- " (a dash and a space)
+----------------------------------------------------------------------------------------------------------------------
+ansible palybook
+
+An Ansible playbook is an organized unit of scripts that defines work for a server configuration managed by the automation tool Ansible. Ansible is a configuration management tool that automates the configuration of multiple servers by the use of Ansible playbooks. ... Ansible plays are written in YAML
+-----------------------------------------------------------------------------------------------------
+playbook
+
+The goal of a play is to map a group of hosts to some well defined roles, represented by things ansible calls tasks. At a basic level, a task is nothing more than a call to an ansible module.
+
+By composing a playbook of multiple ‘plays’, it is possible to orchestrate multi-machine deployments, running certain steps on all machines in the webservers group, then certain steps on the database server group, then more commands back on the webservers group, etc.
+--------------------------------------------------------------------------------------------------------------------------------
+
+ansible module
+
+Ansible modules are reusable, standalone scripts that can be used by the Ansible API, or by the ansible or ansible-playbook programs. They return information to ansible by printing a JSON string to stdout before exiting. They take arguments in one of several ways which we'll go into as we work through this tutorial
+---------------------------------------------------------------------------------------------------------------------------------- 
