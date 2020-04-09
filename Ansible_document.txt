@@ -1,0 +1,38 @@
+what is ansible 
+
+Ansible is an open-source software provisioning, configuration management, and application-deployment tool. It runs on many Unix-like systems, and can configure both Unix-like systems as well as Microsoft Windows. ... Ansible was written by Michael DeHaan and acquired by Red Hat in 2015.
+
+why we use ansible
+
+Ansible has many more use cases than I have mentioned in this article so far, like provisioning cloud infrastructure, deploying application code, managing SSH keys, configuring databases, and setting up web servers. One of my favorite open source projects that uses Ansible is called Streisan
+
+
+How ansible works
+
+Ansible works by connecting to your nodes and pushing out small programs, called "Ansible modules" to them. ... Ansible then executes these modules (over SSH by default), and removes them when finished. Your library of modules can reside on any machine, and there are no servers, daemons, or databases required.
+
+License: Proprietary / GNU General Public License
+Stable release: 2.9.1 / November 14, 2019; 2 months ago
+Original author(s): Michael DeHaan
+Developer(s): Ansible Community / Ansible Inc. / Red Hat Inc.
+Operating system: Linux, Unix-like, MacOS, Windows
+Written in: Python, PowerShell, Ruby
+
+ansible basic concepts
+
+1.control node
+
+2.managed node
+
+3.inventery
+
+4.modules
+
+5.task
+
+6.playbook
+
+
+
+
+
