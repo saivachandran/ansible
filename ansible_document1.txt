@@ -59,3 +59,25 @@ ansible module
 
 Ansible modules are reusable, standalone scripts that can be used by the Ansible API, or by the ansible or ansible-playbook programs. They return information to ansible by printing a JSON string to stdout before exiting. They take arguments in one of several ways which we'll go into as we work through this tutorial
 ---------------------------------------------------------------------------------------------------------------------------------- 
+
+what is ansible handler why we usee handler
+
+Handlers are just like regular tasks in an Ansible playbook (see Tasks) but are only run if the Task contains a notify directive and also indicates that it changed something. ... A host is simply a remote machine that Ansible manages. They can have individual variables assigned to them, and can also be organized in groups.
+
+---------------------------------------------------------------------------------------------------------------------------
+why we use handler in ansible
+
+A Handler will take an action when called by an event it listens for. This is useful for secondary actions that might be required after running a Task, such as starting a new service after installation or reloading a service after a configuration change.
+----------------------------------------------------------------------------------------------------------------------------
+
+What is module in Ansible?
+
+Ansible modules are reusable, standalone scripts that can be used by the Ansible API, or by the ansible or ansible-playbook programs. They return information to ansible by printing a JSON string to stdout before exiting. They take arguments in one of several ways which we'll go into as we work through this tutorial
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Where are Ansible modules stored?
+Ansible. cfg file: Located by default at /etc/ansible/ansible. cfg, it has the necessary privilege escalation options and the location of the inventory file. Main file: A playbook that has modules that perform various tasks on a host listed in an inventory or host file.
+
+------------------------------------------------------------------------------------------------------------------------------
+

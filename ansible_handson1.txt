@@ -533,9 +533,259 @@ esc
 # ansible-playbook muldir.yml
 
 -------------------------------------------------------------------------------------------
+create user in remote machine using ansible
+
+vim user.yml
+
+---
+- hosts: webserver2
+  tasks:
+  - name: create user in remote server
+    user:
+      name: kaviya
+      comment: kaviya s
+      shell: /bin/bash
+      uid: 1200
+      group: root
+...      
+
+esc
+:wq!
+
+# ansible-playbook user.yml --syntax-check
+
+# ansible-playbook user.yml --list-host
+
+# ansible-playbook user.yml
+
+----------------------------------------------------------------------------------------------
+delete user from remote server
+
+vim userrem.yml
+
+---
+- hosts: webserver2
+  tasks:
+  - name: create user in remote server
+    user:
+      name: kaviya
+      comment: kaviya s
+      shell: /bin/bash
+      uid: 1200
+      group: root
+      state: absent
+      remove: yes
+...      
+
+esc
+:wq!
+
+# ansible-playbook userrem.yml --syntax-check
+
+# ansible-playbook userrem.yml --list-host
+
+# ansible-playbook userrem.yml
+
+----------------------------------------------------------------------------------------------------
+
+ansibe paybook using handler task
+
+vim handlers.yml
+
+---
+- hosts: webserver2
+  tasks:
+  - name: 
+    file:
+      path: /opt/cache
+      state: directory
+  - name: install nginx
+    yum:
+      name: nginx
+      state: latest
+    notify: restart nginx
+  handlers:
+   - name: restart nginx
+     service: 
+       name: nginx
+       state: restarted
+
+...       
+
+esc
+:wq!
+
+# ansible-playbook handlers.yml --syntax-check
+
+# ansible-playbook handlers.yml --list-host
+
+# ansible-playbook handlers.yml
+
+------------------------------------------------------------------------------
+
+ansible module
+
+file module 
+
+play1:
+
+vim file3.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: change file ownership group and permission
+    file:
+      path: /root/sai/kaviya.txt
+      owner: sai
+      group: sai
+      mode: '0655'
+... 
+
+esc
+:wq!
+
+# ansible-playbook file2.yml  --syntax-check
+
+# ansible-playbook file2.yml  --list-host
+
+# ansible-playbook file2.yml
+
+
+
+play2
+
+vim file3.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: change file ownership group and permission
+    file:
+      path: /root/sai/kaviya.txt
+      owner: sai
+      group: sai
+      mode: '0655'
+... 
+
+esc
+:wq!
+
+# ansible-playbook file3.yml --syntax-check
+
+# ansible-playbook file3.yml --list-host
+
+# ansible-playbook file3.yml
+
+
+--------------------------------------------------------------------------------
+vim link.yml
+---
+- hosts: webserver1
+  tasks:
+  - name:   
+    file:
+      src: /root/sai/test.txt
+      dest: /root/kavi/test.txt
+      owner: sai
+      group: sai
+      state: link
+...   
+
+# ansible-playbook link.yml --syntax-check
+
+# ansible-playbook link.yml --list-host
+
+# ansible-playbook link.yml
+
+---------------------------------------------------------------------------------
+save remote remote gatherfact detail in the local system
+
+vim gatherfacts1.yml
+
+---
+- hosts: webserver1
+  gather_facts: yes
+  tasks:
+    - debug: var=ansible_date_time
+      register: date_time
+    - local_action: "copy content='{{ date_time }}' dest=/etc/ansible/data1.txt"
+
+...
+
+# ansible-playbook gatherfacts1.yml --syntax-check
+
+# ansible-playbook gatherfacts1.yml --list-host
+
+# ansible-playbook gatherfacts1.yml
+   
+---------------------------------------------------------------------------------
+
+ansible jinja2 template playbook
+
+vim host.yml
+
+---
+- hosts: webserver1
+  gather_facts: yes
+  tasks:
+  - name: collect remote system data       
+    debug:     
+      msg: system {{ ansible_eth0 }}
+  - template:
+          src: ./hostname.j2
+          dest: /tmp/hostname.txt    
+    delegate_to: localhost
+            
+...
+
+esc
+:wq!
+
+
+jinja2 yaml file
+
+vim hostname.j2
+
+{% for i,j in   ansible_eth0.items() %}
+{% if i == 'ipv4' %}
+{% for b,c in j.items() %}
+{{ b.ljust(10)  }} - {{c}}
+{% endfor %}
+{% else %}  
+{{ i.ljust(10) }} - {{ j}}
+{% endif %}
+{% endfor %}
+
+
+esc
+:wq!
+
+# ansible-playbook host.yml --syntax-check
+
+# ansible-playbook host.yml --list-host
+
+# ansible-playbook host.yml
+
+check hostname.txt file
+
+# cat /tmp/hostname.txt
+--------------------------------------------------------------------------------------------------------
 
 
 
 
 
-end of the file
+
+     
+
+
+
+
+
+
+
+
+
+
+
