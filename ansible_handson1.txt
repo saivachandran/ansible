@@ -772,6 +772,204 @@ check hostname.txt file
 # cat /tmp/hostname.txt
 --------------------------------------------------------------------------------------------------------
 
+copy module 
+
+copy file from host to remote
+
+vim copy.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: copy file host to reomte 
+    copy:
+      src: user.txt
+      dest: /root/
+...        
+
+# ansible-playbook copy.yml --syntax-check
+
+# ansible-playbook copy.yml --list-host
+
+# ansible-playbook copy.yml
+------------------------------------------------------------------------------------------------------
+
+
+copy module 
+
+copy file from host to remote
+
+vim copy1.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: copy file host to reomte 
+    fetch:
+      src: user.txt
+      dest: /root/
+...        
+
+# ansible-playbook copy1.yml --syntax-check
+
+# ansible-playbook copy1.yml --list-host
+
+# ansible-playbook copy1.yml
+
+---------------------------------------------------------------------------------------------------
+
+cpy file only file conetent to remote host
+
+---
+- hosts: webserver1
+  tasks:
+  - name: copy file host to reomte 
+    copy:
+      content:
+      src: user.txt
+      dest: /root/user3.txt      
+...      
+
+# ansible-playbook copy3.yml --syntax-check
+
+# ansible-playbook copy3.yml --list-host
+
+# ansible-playbook copy3.yml
+
+-------------------------------------------------------------------------------------------------
+ansible find and replace using linein command
+
+vim lineinfile.yml
+
+--- 
+- hosts: webserver1 
+  tasks:
+  - name:
+    lineinfile:
+      path: /root/selinux.txt 
+      regexp: 'SELINUX='
+      line: SELINUX=disabled
+
+
+# ansible-playbook lineinfile.yml --syntax-check
+
+# ansible-playbook lineinfile.yml --list-host
+
+# ansible-playbook lineinfile.yml
+
+----------------------------------------------------------------------------------------------
+
+ansible command module
+
+vim command.yml
+
+---
+- name: check remote server uptime
+  hosts: webserver1
+  tasks:
+  - name: execute uptime command over command module
+    register: uptimeoutput
+    command: "uptime"
+
+  - debug:
+      var: uptimeoutput
+...  
+
+
+# ansible-playbook command.yml --syntax-check
+
+# ansible-playbook command.yml --list-host
+
+# ansible-playbook command.yml
+
+---------------------------------------------------------------------------------------------
+
+vim command1.yml
+
+---
+- name: check the remote hosname and details
+  hosts: webserver1
+  tasks:
+  - name:  execute uname command over command module
+    command: "uname -a"
+    register: _result
+  - debug:
+      msg: _result
+
+
+# ansible-playbook command1.yml --syntax-check
+
+# ansible-playbook command1.yml --list-host
+
+# ansible-playbook command1.yml
+         
+-----------------------------------------------------------------------------------------
+
+ansible shell module
+
+vim shell.yml
+
+---
+- hosts: webserver1     
+  tasks:
+  - name:        
+    shell: ls -ltr /root/ >> /root/hello.txt
+    
+...
+
+# ansible-playbook shell.yml --syntax-check
+
+# ansible-playbook shell.yml --list-host
+
+# ansible-playbook shell.yml
+-------------------------------------------------------------------------------------------   
+
+ansible shell module
+
+vim shell1.yml
+
+---
+- hosts: webserver1     
+  tasks:
+  - name:        
+    shell: echo "hello world" > /root/hello.txt
+    
+...
+
+# ansible-playbook shell1.yml --syntax-check
+
+# ansible-playbook shell1.yml --list-host
+
+# ansible-playbook shell1.yml  
+
+-------------------------------------------------------------------------------------------
+
+Use the creates argument to run the shell command only if a file doesn’t exist already.
+
+vim shell2.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: create file if doesn't exist
+    shell: echo "saiva" > /root/hello.txt
+    args:
+      creates: /root/hello.txt
+...  
+
+# ansible-playbook shell2.yml --syntax-check
+
+# ansible-playbook shell2.yml --list-host
+
+# ansible-playbook shell2.yml 
+
+----------------------------------------------------------------------------- 
+       
+
+
+
+
+
 
 
 
