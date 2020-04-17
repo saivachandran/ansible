@@ -963,8 +963,479 @@ vim shell2.yml
 
 # ansible-playbook shell2.yml 
 
------------------------------------------------------------------------------ 
-       
+------------------------------------------------------------------------------------------- 
+
+How to run shell only if a file does exist
+
+vim shell3.txt
+
+---
+- hosts: webserver1
+  tasks:
+  - name: remove file if exist
+    shell: rm $HOME/hello.txt
+    args:
+      removes: $HOME/hello.txt
+...      
+
+
+# ansible-playbook shell3yml --syntax-check
+
+# ansible-playbook shell3.yml --list-host
+
+# ansible-playbook shell3.yml   
+
+--------------------------------------------------------------------------
+
+How to run shell in a different directory
+
+vim shell4.yml
+
+---
+- name: execute shell module with chdir command
+  hosts: webserver1
+  tasks:
+  - name: create file with specified directory
+    shell: echo "hello world" > hello.txt
+    args:
+      chdir: /tmp/ 
+...      
+
+
+# ansible-playbook shell4.yml --syntax-check
+
+# ansible-playbook shell4.yml --list-host
+
+# ansible-playbook shell4.yml   
+
+---------------------------------------------------------------------------------------------
+ansible template module
+
+vim template.yml
+
+---
+- hosts: webserver1
+  vars:
+    ansible_os_family: 'Linux'
+    ansible_os_distribution: 'ubuntu'
+    ansible_os_distribution_version: '18.04'
+  tasks:  
+  - name: copy the file
+    template:
+      src: os.j2
+      dest: /tmp/os.txt
+    delegate_to: localhost 
+...          
+
+
+
+create jinja2 template file
+
+vim os.j2
+
+Os family {{ansible_os_family}}
+Os distribution {{ansible_os_distribution}}
+Os version {{ansible_os_distribution_version}}
+
+# ansible-playbook template.yml --syntax-check
+
+# ansible-playbook template.yml --list-host
+
+# ansible-playbook template.yml
+
+
+cat /tmp/os.txt
+
+Os family linux
+Os distribution ubuntu
+Os version 18.04
+
+------------------------------------------------------------------------------------------------------
+
+we can taje backup using template module
+
+---
+- hosts: webserver1
+  vars:
+    ansible_os_family: 'Linux'
+    ansible_os_distribution: 'centos'
+    ansible_os_distribution_version: 'centos 8'
+  tasks:  
+  - name: copy the file
+    template:
+      src: os2.j2
+      dest: /tmp/os1.txt 
+      backup: yes 
+    delegate_to: localhost 
+...          
+
+
+vim os2.j2
+
+Os family {{ansible_os_family}}
+Os distribution {{ansible_os_distribution}}
+Os version {{ansible_os_distribution_version}}   
+
+# ansible-playbook template1.yml --syntax-check
+
+# ansible-playbook template1.yml --list-host
+
+# ansible-playbook template1.yml
+
+
+cat /tmp/os1.txt
+
+---------------------------------------------------------------------------------------------
+
+template list
+
+vim template3.yml
+
+---
+- hosts: webserver1
+  vars:
+    list: ['saiva','kaviya','kavin','rohit']
+  tasks:
+  - name: access list using jinja2 template
+    template: 
+      src: list.j2
+      dest: /tmp/list.txt
+    delegate_to: localhost  
+...      
+
+
+vim list.j2
+
+{% for i in list %}
+  {{ i }}
+{% endfor %}
+
+# ansible-playbook template3.yml --syntax-check
+
+# ansible-playbook template3.yml --list-host
+
+# ansible-playbook template3.yml
+
+
+cat /tmp/list.txt
+
+-----------------------------------------------------------------------------------
+template example using dict
+
+vim template4.yml
+
+---
+- hosts: webserver1
+  vars:
+    dict: {'saiva:kaviya','kavin:ll',"rohit:kk"}
+  tasks:  
+  - name:    
+    template:
+      src: dict.j2
+      dest: /tmp/dict.txt
+    delegate_to: localhost  
+...    
+
+vim dict.j2
+
+{% for i in dict %}
+   {{ i.ljust(50) }}
+{% endfor %}
+
+# ansible-playbook template4.yml --syntax-check
+
+# ansible-playbook template4.yml --list-host
+
+# ansible-playbook template4.yml
+
+--------------------------------------------------------------------------------------------------
+
+include and import_playbook module
+
+vim include.yml
+
+---
+- hosts: webserver1
+  tasks:
+    - debug:
+        msg: play1
+- name: include playbook
+  import_playbook: command.yml
+...           
+
+
+---
+- hosts: webserver1
+  tasks:
+    - debug:
+        msg: play1
+- name: include playbook
+  include: command.yml
+...  
+
+
+# ansible-playbook include.yml --syntax-check
+
+# ansible-playbook include.yml --list-host
+
+# ansible-playbook include.yml
+
+-----------------------------------------------------------------------------------------------------
+
+ansible variable
+
+vim var1.yml
+
+---
+- hosts: webserver1
+  vars:
+    saiva: kaviya
+  tasks:
+  - name:
+    debug:
+      msg: "{{ saiva }}" 
+... 
+
+# ansible-playbook var1.yml --syntax-check
+
+# ansible-playbook var1.yml --list-host
+
+# ansible-playbook var1.yml
+
+---------------------------------------------------------------------------------------------------
+    
+ansible variable
+
+vim var2.yml
+
+---
+- hosts: webserver1
+  vars:
+    saiva: 100
+  tasks:
+  - name:
+    debug:
+      msg: "{{ saiva }}" 
+... 
+
+# ansible-playbook  var2.yml --syntax-check
+
+# ansible-playbook  var2.yml --list-host
+
+# ansible-playbook  var2.yml
+
+------------------------------------------------------------------------------------------------
+
+variable with array
+
+vim var4.yml
+
+---
+- hosts: all
+  vars:
+    students:
+      - saiva
+      - prem
+      - kabil
+      - vijay
+      - arun
+  tasks:
+  - name: variable with array
+    debug:
+      msg: "{{ students[1] }}"
+...      
+     
+
+# ansible-playbook  var4.yml --syntax-check
+
+# ansible-playbook  var4.yml --list-host
+
+# ansible-playbook  var4.yml
+
+
+
+
+vim var5.yml
+
+---
+- hosts: all
+  vars:
+    students:
+      - saiva
+      - prem
+      - kabil
+      - vijay
+      - arun
+  tasks:
+  - name: variable with array
+    debug:
+      msg: "{{ students }}"
+...      
+     
+
+# ansible-playbook  var5.yml
+ --syntax-check
+
+# ansible-playbook  var5.yml
+ --list-host
+
+# ansible-playbook  var5.yml
+
+---------------------------------------------------------------------------------------------------
+
+variable with dictionary
+
+vim var6.yml
+
+---
+- hosts: webserver1 
+  vars:
+    students:
+      - saiva:
+          district: Ramnad
+          native: thuval 
+      - prem:
+          district: madurai
+          native: natarmanaglam
+      - jino:
+          district: sivagangai
+          native: kaikatti
+  tasks:
+  - name: variable with dictionary
+    debug:
+      var: students
+
+...       
+
+# ansible-playbook var6.yml --syntax-check
+
+# ansible-playbook var6.yml --list-hosts
+
+# ansible-playbook var6.yml
+
+-----------------------------------------------------------------------------------------------------------
+
+ansible conditional playbook
+
+vim when.yml
+
+---
+- name: install apache webserver
+  hosts: all
+  tasks:
+  - name: install apache webserver on centos 7
+    yum: name=httpd state=present
+    when: ansible_os_family == "RedHat"
+    
+  - name: install apache webserver on ubuntu
+    apt: name=apache2 state=present
+    when: ansible_os_family == "Debian" 
+
+... 
+
+
+# ansible-playbook when.yml --syntax-check
+
+# ansible-playbook when.yml --list-hosts
+
+# ansible-playbook when.yml
+
+
+
+uninsatll package using condtional statement
+
+
+
+vim when1.yml
+
+---
+- name: install apache webserver
+  hosts: all
+  tasks:
+  - name: install apache webserver on centos 7
+    yum: name=httpd state=absent
+    when: ansible_os_family == "RedHat"
+    
+  - name: install apache webserver on ubuntu
+    apt: name=apache2 state=absent
+    when: ansible_os_family == "Debian" 
+
+... 
+
+
+# ansible-playbook when1.yml --syntax-check
+
+# ansible-playbook when1.yml --list-hosts
+
+# ansible-playbook when1.yml
+
+-------------------------------------------------------------------------------------------
+
+ansible and condition 
+
+
+vim when2.yml
+
+---
+- name: using and condition install apache webserver
+  hosts: all
+  tasks:
+  - name: install apache webserver
+    apt: name=apache2 state=present
+    become: no
+    when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
+...  
+
+# ansible-playbook when2.yml --syntax-check
+
+# ansible-playbook when2.yml --list-hosts
+
+# ansible-playbook when2.yml
+
+
+if you give second condition wrong it skipped the installation
+
+
+vim when3.yml
+
+---
+- name: using and condition install apache webserver
+  hosts: all
+  tasks:
+  - name: install apache webserver
+    apt: name=apache2 state=present
+    become: no
+    when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+...  
+
+# ansible-playbook when3.ymll --syntax-check
+
+# ansible-playbook when3.yml --list-hosts
+
+# ansible-playbook when3.yml
+
+
+--------------------------------------------------------------------------------------------------
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
 
 
 
