@@ -1416,6 +1416,376 @@ vim when3.yml
 
 
 --------------------------------------------------------------------------------------------------
+ansible or conditional
+
+vim when4.yml
+
+---
+- name: check disk space   
+  hosts: all
+  tasks:
+  - name: check server disk space usage
+    shell: df -Th
+    register: _result
+  - debug:
+      var: _result
+    when: ansible_os_family == "Debian"  or ansible_os_family == "RedHat"
+... 
+
+# ansible-playbook when4.ymll --syntax-check
+
+# ansible-playbook when4.yml --list-hosts
+
+# ansible-playbook when4.yml
+
+-------------------------------------------------------------------------------------------------
+
+using conditional statement check file exist or not
+
+vim when6.yml
+ ---
+- name: check file exist status
+  hosts: webserver2
+  tasks:
+  - stat:
+      path: /root/user.txt 
+    register: result
+  - debug:
+      msg: "ansible when file Exists Example."
+    when: result.stat.exists
+...           
+
+# ansible-playbook when6.ymll --syntax-check
+
+# ansible-playbook when6.yml --list-hosts
+
+# ansible-playbook when6.yml
+
+
+vim when7.yml
+
+
+---
+- name: file is not present on remote server
+  hosts: webserver2
+  tasks:
+  - name: check file there or not
+    stat:
+      path: /root/user1.txt
+    register: result
+  - debug:
+      msg: "ansible when file not present Example"
+    when: result.stat.exists == false
+
+...
+
+# ansible-playbook when7.yml --syntax-check
+
+# ansible-playbook when7.yml --list-hosts
+
+# ansible-playbook when7.yml
+
+--------------------------------------------------------------------------------------
+
+ansible loop
+
+using ansible loop create multiple user on remote server
+
+vim loop1.yml
+
+---
+- name: ansible loop method
+  hosts: webserver1
+  tasks:
+  - name: create multiple user with ansible loop concept
+    command: adduser {{ item }}
+    with_items:
+    - sai
+    - kavi
+...  
+
+# ansible-playbook loop1.yml --syntax-check
+
+# ansible-playbookloop1.yml --list-hosts
+
+# ansible-playbook loop1.yml
+
+
+
+
+using ansible loop delete multiple user on remote server
+
+
+using ansible loop create multiple user on remote server
+
+vim loop2.yml
+
+---
+- name: ansible loop method
+  hosts: webserver1
+  tasks:
+  - name: create multiple user with ansible loop concept
+    command: userdel -r {{ item }}
+    with_items:
+    - sai
+    - kavi
+...  
+
+          
+-----------------------------------------------------------------------------------------------
+
+install multiple pacake in ansible loop
+
+vim loop3.yml
+
+---
+- hosts: webserver2
+  tasks:
+  - name: install multiple packages on ubuntu
+    apt: name={{ item }} state=present
+    with_items:
+    - apache2
+    - vsftpd
+  - name: start apache service
+    service: name=apache2 state=started
+
+  - name: start vsftpd service
+    service: name=vsftpd state=started    
+...
+
+
+
+
+
+uninstall multiple packages
+
+vim loop4.yml
+
+
+---
+- hosts: webserver2
+  tasks:
+  - name: install multiple packages on ubuntu
+    apt: name={{ item }} state=absent
+    with_items:
+    - apache2
+    - vsftpd
+
+...
+
+# ansible-playbook loop4.yml --syntax-check
+
+# ansible-playbook loop4.ymll --list-hosts
+
+# ansible-playbook loop4.yml  
+
+---------------------------------------------------------------------------------------------------
+
+ansible roles
+==============
+create ansible role
+
+cd /etc/ansible/roles
+
+create apache role inside a roles directory
+
+# ansible-galaxy init apache --offline
+
+# cd apache/
+ 
+# ll
+
+drwxr-xr-x 10 root root 4096 Apr 18 08:00 ./
+drwxr-xr-x  3 root root 4096 Apr 18 08:00 ../
+-rw-r--r--  1 root root  539 Apr 18 08:00 .travis.yml
+-rw-r--r--  1 root root 1328 Apr 18 08:00 README.md
+drwxr-xr-x  2 root root 4096 Apr 18 08:00 defaults/
+drwxr-xr-x  2 root root 4096 Apr 18 08:00 files/
+drwxr-xr-x  2 root root 4096 Apr 18 08:00 handlers/
+drwxr-xr-x  2 root root 4096 Apr 18 08:00 meta/
+drwxr-xr-x  2 root root 4096 Apr 18 08:00 tasks/
+drwxr-xr-x  2 root root 4096 Apr 18 08:00 templates/
+drwxr-xr-x  2 root root 4096 Apr 18 08:00 tests/
+drwxr-xr-x  2 root root 4096 Apr 18 08:00 vars/
+
+
+# tree
+
+.
+└── apache
+    ├── README.md
+    ├── defaults
+    │   └── main.yml
+    ├── files
+    ├── handlers
+    │   └── main.yml
+    ├── meta
+    │   └── main.yml
+    ├── tasks
+    │   └── main.yml
+    ├── templates
+    ├── tests
+    │   ├── inventory
+    │   └── test.yml
+    └── vars
+        └── main.yml
+
+ansible role execute throuh main.yml
+
+
+# cd tasks
+
+# vim main.yml
+
+---
+# tasks file for apache
+
+- include: install.yml
+- include: configure.yml
+- include: service.yml  
+
+esc
+:wq!
+
+next==> need to create included file inside the directory
+
+vim install.yml
+
+---
+- name: install  the apache web server 
+  apt:
+    name: apache2
+    state: latest
+...      
+
+
+vim configure.yml
+
+---
+- name: apache2.conf
+  copy:
+    src: apache.conf
+    dest: /etc/apache2/apache2.conf
+  notify:
+  - restart the apache service
+- name: 
+  copy:
+    src: index.html
+    dest: /var/www/html/index.html
+...   
+
+
+vim service.yml
+
+---
+- name: starting the apache service
+  service:
+    name: apache2
+    state: started
+...  
+
+
+# cd ../files
+
+# cp /etc/apache2/apache2.conf
+
+do some modification in apache2.conf
+
+
+vim index.html
+
+<html>
+<h1> saiva learning ansible</h1>	
+</html>	
+===================
+
+configure handler
+
+cd handlers
+
+vim main.yml
+
+---
+# handlers file for apache
+- name: restart the apache service
+  service:
+    name: apache2
+    state: restarted
+...
+
+
+cd /etc/ansible
+
+vim site.yml
+
+---
+
+- hosts: webserver2
+  roles:
+  - apache
+
+esc
+:wq!
+
+
+
+# ansible-playbook site.yml --syntax-check
+
+
+# ansible-playbook site.yml 
+
+PLAY [webserver2] ******************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [172.17.0.4]
+
+TASK [apache : install  the apache web server] *************************************************************************************************
+ok: [172.17.0.4]
+
+TASK [apache : apache2.conf] *******************************************************************************************************************
+changed: [172.17.0.4]
+
+TASK [apache : copy] ***************************************************************************************************************************
+changed: [172.17.0.4]
+
+TASK [apache : starting the apache service] ****************************************************************************************************
+changed: [172.17.0.4]
+
+RUNNING HANDLER [apache : restart the apache service] ******************************************************************************************
+changed: [172.17.0.4]
+
+PLAY RECAP *************************************************************************************************************************************
+172.17.0.4                 : ok=6    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+============================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
 
 
 

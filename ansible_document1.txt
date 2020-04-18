@@ -77,7 +77,45 @@ Ansible modules are reusable, standalone scripts that can be used by the Ansible
 -------------------------------------------------------------------------------------------------------------------------------
 
 Where are Ansible modules stored?
+
 Ansible. cfg file: Located by default at /etc/ansible/ansible. cfg, it has the necessary privilege escalation options and the location of the inventory file. Main file: A playbook that has modules that perform various tasks on a host listed in an inventory or host file.
 
 ------------------------------------------------------------------------------------------------------------------------------
+Ansible loops
+
+In computer programming, this is called a loop. Common Ansible loops include changing ownership on several files and/or directories with the file module, creating multiple users with the user module, and repeating a polling step until a certain result is reached. ... We added loop in Ansible 2.5.
+--------------------------------------------------------------------------------------------------------------------------------
+ansible role
+
+Roles provide a framework for fully independent, or interdependent collections of variables, tasks, files, templates, and modules. In Ansible, the role is the primary mechanism for breaking a playbook into multiple files. This simplifies writing complex playbooks, and it makes them easier to reuse.
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+ansible role
+============
+apache role ==> whatever require to run apache should be there in the role
+
+roles ==> it's predefined straucture
+
+
+roles components:
+================
+
+1.defaults==> defaults provide the data about role / defult variables stored here
+
+2.files ==> static files what files we push to remote machine
+
+3.handlers ==> like a trigger when changes made in the configuration file using notify command it will restart the service
+
+4.meta ==> inforamtion about role like pacakege name owner
+
+5.task ==> actual action like installing package, copying file 
+
+6.template ==> dynamic files stored in template folder jinja2 template language
+
+7. vars ==> boths vars and defaults stored in the vars but vars variabe have higher priority
+
+
+
+
 
