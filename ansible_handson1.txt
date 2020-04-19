@@ -1760,6 +1760,174 @@ PLAY RECAP *********************************************************************
 
 ============================================================================================================
 
+ansible vault
+
+create user.yml file and confirm that playbook working properly
+
+vim user.yml
+
+---
+- name: adding user to remote server
+  hosts: webserver1
+  tasks:
+  - name: create user
+    user:
+      name: kavi
+      password: kavi@123
+      comment: "kaviya"
+      shell: /bin/bash
+      createhome: yes
+      home: /home/kavi
+  - name: copying confidential aagreement
+    copy:
+      content: "It's confidential Agreement between employee and Employers\n"
+      dest: /home/kavi/Agreement 
+...      
+      
+
+# nasible-playbook user.yml --syntax-check
+
+# ansible-playbook user.yml --list-host
+
+# ansible-playbook user.yml
+
+
+
+Encrypt user.yml file using ansible vault
+
+# ansible-vault encrypt user.yml
+
+after encrypt the user.yml file  we can't see previous format, it will encrypted 
+
+# cat user.yml
+
+we can view encrypted yaml file like below
+
+# ansible-vault view user.yml
+
+Vault password : saiva
+
+---
+- name: adding user to remote server
+  hosts: webserver1
+  tasks:
+  - name: create user
+    user:
+      name: kavi
+      password: kavi@123
+      comment: "kaviya"
+      shell: /bin/bash
+      createhome: yes
+      home: /home/kavi
+  - name: copying confidential Agreementi
+    copy:
+      content: "It's confidential Agreement between employee and Employers\n"
+      dest: /home/kavi/Agreement 
+...      
+      
+
+edit encrypted playbook
+
+# ansible-vault edit user.yml
+
+Vault password: saiva
+
+
+run encrypted playbook like below
+
+# ansible-playbook user.yml --ask-vault-password
+Vault password: saiva
+--------------------------------------------------------------------------------------------------------------------------------
+
+run palybook ansother way using password file
+
+
+create password file and store password on that file
+
+vim vault-password
+
+saiva
+
+esc
+:wq!
+
+
+run playbook
+
+
+# ansible-playbook user.yml --vault-password-file vault-password
+
+PLAY [adding user to remote server] ************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [172.17.0.2]
+
+TASK [create user] *****************************************************************************************************************************
+[WARNING]: The input password appears not to have been hashed. The 'password' argument must be encrypted for this module to work properly.
+ok: [172.17.0.2]
+
+TASK [copying confidential Agreementi] *********************************************************************************************************
+ok: [172.17.0.2]
+
+PLAY RECAP *************************************************************************************************************************************
+172.17.0.2                 : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+---------------------------------------------------------------------------------------------
+
+change ansible vault password
+
+# ansible-vault rekey user.yml
+
+Vault password: 
+New Vault password: 
+Confirm New Vault password: 
+Rekey successful
+
+
+decrypt ansible-vault file
+
+# ansible-vault decrypt user.yml
+
+Vault password: 
+Decryption successful
+	
+# cat user.yml
+
+---
+- name: adding user to remote server
+  hosts: webserver1
+  tasks:
+  - name: create user
+    user:
+      name: kavi
+      password: kavi@123
+      comment: "kaviya"
+      shell: /bin/bash
+      createhome: yes
+      home: /home/kavi
+  - name: copying confidential Agreementi
+    copy:
+      content: "It's confidential Agreement between employee and Employers\n"
+      dest: /home/kavi/Agreement 
+...      
+          
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
 
 
 
