@@ -117,6 +117,14 @@ roles components:
 
 -----------------------------------------------------------------------------------------------------
 
+ansible vault
+
+using ansible vault we can protect data encrypt and decrypt users data 
+
+Ad-Hoc
+=======
+The Ad-Hoc command is the one-liner ansible command that performs one task on the target host. It allows you to execute simple one-line task against one or group of hosts defined on the inventory file configuration
+
 
 
 

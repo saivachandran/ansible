@@ -93,6 +93,66 @@ ansible -m ping all -o
  08:49:46 up 5 min,  1 user,  load average: 0.09, 0.05, 0.01
 172.17.0.4 | CHANGED | rc=0 >>
  08:49:46 up 5 min,  1 user,  load average: 0.09, 0.05, 0.01
+
+Ad-Hoc coomands
+===============
+Managing files
+=============
+
+# ansible webserver1 -m copy -a "src=/etc/hosts dest=/tmp/hosts"
+
+# ansible all -m copy -a "src=/root/manansible dest=/tmp/manansible" 
+
+# ansible webserver1 -m file -a "dest=/tmp/manansible mode=600"
+
+# ansible webserver1 -m file -a "dest=/tmp/manansible mode=755 owner=kavi group=kavi"
+
+directory
+=========
+
+# ansible webserver2 -m file -a "dest=/tmp/sai mode=700 owner=root group=root state=directory"
+
+file
+====
+
+# ansible webserver2 -m file -a "dest=/tmp/sai mode=400 owner=root group=root state=touch"
+
+delete file
+==========
+
+# ansible webserver1 -m file -a "dest=/tmp/manansible state=absent"
+
+# ansible webserver1 -m file -a "dest=/tmp/kk.txt state=absent"
+
+Manage packages
+==============
+
+# ansible webserver3 -m apt -a "name=apache2 state=present"
+
+# ansible webserver3 -m apt -a "name=apache2 state=absent"
+
+Manage services
+==============
+
+# ansible webserver1 -m service -a "name=apache2 state=restarted"
+
+uninstall packages
+=================
+
+# ansible webserver3 -m apt -a "name=apache2 state=absent"
+
+user management
+===============
+
+# ansible webserver1 -m user -a "name=saiva password=saiva"
+
+# ansibe webserver1 -m user -a "name=saiva state=absent"
+
+gatherfacts
+===========
+
+# ansible webserver1 -m setup
+
 ----------------------------------------------------------------------------
 custom inventry file
 
@@ -857,6 +917,99 @@ vim lineinfile.yml
 
 # ansible-playbook lineinfile.yml
 
+
+insert after particular line
+=============================
+
+vim lineinfile.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: change selinux configuration
+    lineinfile:
+      dest: /etc/selinux/config
+      line: hello=kavi
+      insertafter: 'saiva'
+
+... 
+
+# ansible-playbook lineinfile.yml --syntax-check
+
+# ansible-playbook lineinfile.yml --list-hosts
+
+# ansible-playbook lineinfile.yml
+
+
+insert before partcular line
+=============================
+vim lineinfile1.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: change selinux configuration
+    lineinfile:
+      dest: /etc/selinux/config
+      line: hello=kavi
+      inserbefore: 'saiva'
+
+... 
+
+# ansible-playbook lineinfile1.yml --syntax-check
+
+# ansible-playbook lineinfile1.yml --list-hosts
+
+# ansible-playbook lineinfile1.yml
+------------------------------------------------------------------------------
+
+comment particular lin in ansible remote machine
+================================================
+
+vim commentline.ym
+
+---
+- hosts: webserver1
+  tasks:
+  - name: change selinux configuration
+    lineinfile:
+      dest: /etc/selinux/config
+      regexp: '(SELINUX=disabled)'
+      line: '#\1'
+      backrefs: yes
+
+# ansible-playbook commentline.yml --syntax-check
+
+# ansible-playbook commentline.yml --list-hosts
+
+# ansible-playbook commentline.yml
+
+
+
+
+uncomment the commented line in remote host
+===========================================
+
+vim uncomment.yml
+
+---
+- hosts: webserver1
+  tasks:
+  - name: uncomment remote host file
+    lineinfile:
+      dest: /etc/selinux/config 
+      regexp: '#(SELINUX=disabled)'
+      line: '\1'
+      backrefs: yes
+... 
+
+# ansible-playbook uncomment.yml --syntax-check
+
+# ansible-playbook uncomment.yml --list-check
+
+# ansible-playbook uncomment.yml
+
+
 ----------------------------------------------------------------------------------------------
 
 ansible command module
@@ -874,6 +1027,9 @@ vim command.yml
   - debug:
       var: uptimeoutput
 ...  
+
+
+
 
 
 # ansible-playbook command.yml --syntax-check
@@ -1052,7 +1208,7 @@ Os version 18.04
 
 ------------------------------------------------------------------------------------------------------
 
-we can taje backup using template module
+we can take backup using template module
 
 ---
 - hosts: webserver1
@@ -1913,6 +2069,13 @@ Decryption successful
 ...      
           
 -----------------------------------------------------------------------------------------------------------------
+ansible dynamic inventry
+
+cd /etc/ansible
+
+$ sudo wget https://raw.githubusercontent.com/ansible/ansible/stable-1.9/plugins/inventory/ec2.py
+
+$ sudo wget https://raw.githubusercontent.com/ansible/ansible/stable-1.9/plugins/inventory/ec2.ini
 
 
 
