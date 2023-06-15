@@ -2079,6 +2079,14 @@ $ sudo wget https://raw.githubusercontent.com/ansible/ansible/stable-1.9/plugins
 
 
 
+# ansible dynamic inventory url ref
+
+https://devopscube.com/setup-ansible-aws-dynamic-inventory/
+
+https://www.cloudthat.com/resources/blog/step-by-step-guide-to-integrate-ansible-dynamic-inventory-plugin-for-aws-ec2-instances
+
+
+
 
 
  
