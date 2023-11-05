@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+  - name: create multiple user
+    command: adduser {{ item }}
+    with_items:
+      - sai
+      - kavi  
+
+    

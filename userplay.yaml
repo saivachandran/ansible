@@ -1,0 +1,9 @@
+---
+- hosts: Redhat
+  become: yes
+  tasks:
+  - name: create user
+    user:
+      name: test2
+      password: test
+    

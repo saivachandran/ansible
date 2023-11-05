@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+  - name: check service status
+    shell: systemctl is-active nginx
+    register: service_status
+    ignore_errors: yes
+  - name: save the service status localfile
+    copy:
+      content: "{{ service_status.stdout }}"  
+      dest: /home/ubuntu/nginx_service_status.txt

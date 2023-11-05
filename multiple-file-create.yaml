@@ -1,0 +1,15 @@
+---
+- hosts: Redhat
+  become: yes
+  tasks:
+  - name: create multiple files on remote server
+    file:
+      path: "{{ item }}"
+      state: touch
+      owner: saiva
+      group: saiva
+      mode: 600
+    with_items:
+    - /home/ec2-user/Ansible_1.txt
+    - /home/ec2-user/Ansible_2.txt
+    - /home/ec2-user/Ansible_3.txt    

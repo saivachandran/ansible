@@ -1,0 +1,15 @@
+---
+- hosts: tag_Name_Redhat_server
+  become: yes
+  tasks:
+  - name: update cache update
+    yum:
+      name: '*'
+      state: latest
+  - name: List updates
+    yum:
+      list: updates
+  - name: update all updates
+    yum:
+      name: '*'
+      state: latest 

@@ -1,0 +1,14 @@
+---
+- hosts: tag_Name_Redhat_server
+  become: yes
+  tasks:
+  - name: Install Nginx
+    yum:
+     name: nginx
+     state: present
+     update_cache: yes
+  - name: start nginx
+    service:
+      name: nginx
+      state: started
+      enabled: yes   

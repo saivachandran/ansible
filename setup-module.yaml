@@ -1,0 +1,9 @@
+---
+- hosts: all
+  tasks:
+    - name: Display OS Information
+      debug:
+        var: ansible_distribution
+    - name: Display Available Memory
+      debug:
+        var: ansible_memtotal_mb

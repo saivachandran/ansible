@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+  - name: delete multiple user
+    command: userdel -r {{ item }}
+    with_items:
+      - sai
+      - kavi

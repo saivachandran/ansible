@@ -1,0 +1,10 @@
+---
+- hosts: Redhat
+  become: yes
+  tasks:
+  - name: copy the file from remote to host
+    fetch:  
+      src: /home/ec2-user/redhatuser.txt
+      dest: /home/ubuntu/
+      flat: yes
+

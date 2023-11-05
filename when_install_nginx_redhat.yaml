@@ -1,0 +1,12 @@
+---
+- name: Install Nginx on Red Hat
+  hosts: Redhat
+  gather_facts: yes  
+  tasks:
+    - name: Install Nginx on Red Hat
+      yum:
+        name: nginx
+        state: present
+      become: yes
+      when: ansible_os_family == 'RedHat' 
+
