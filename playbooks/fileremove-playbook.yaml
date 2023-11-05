@@ -1,0 +1,9 @@
+---
+- hosts: Redhat
+  become: yes
+  tasks:
+  - name: remove file
+    file:
+      dest: /tmp/sai
+      state: absent
+        

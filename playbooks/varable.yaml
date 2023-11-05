@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  become: yes
+  vars:
+    saiva: 100
+  tasks:
+  - name: print variable
+    debug:
+      msg: "{{ saiva }}"
+

@@ -1,0 +1,10 @@
+---
+- hosts: Redhat
+  become: yes
+  tasks:
+  - name: change the file permission
+    file:
+      dest: /tmp/hosts
+      mode: 0700
+      owner: saiva
+      group: saiva

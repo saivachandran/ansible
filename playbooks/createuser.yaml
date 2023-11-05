@@ -1,0 +1,12 @@
+---
+- name: create user on Redhat
+  hosts: Redhat
+  become: yes
+  tasks:
+  - name: create user
+    user:
+      name: Daksha
+      comment: "Daksha saivachandran"
+      groups: "wheel"
+      password: Daksha
+      createhome: yes
