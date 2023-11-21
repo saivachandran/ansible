@@ -1,0 +1,15 @@
+# roles/httpd/tasks/configure.yml
+
+---
+- name: Start Apache service
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Create an HTML file
+  copy:
+    content: "{{ httpd_default_content }}"
+    dest: /var/www/html/index.html
+  become: yes
