@@ -1,0 +1,8 @@
+# roles/httpd/tasks/install.yml
+
+---
+- name: Install Apache HTTP Server
+  yum:
+    name: httpd
+    state: present
+  become: yes
